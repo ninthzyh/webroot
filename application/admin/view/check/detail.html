@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer1.js"></script>
+</head>
+<body>
+<div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;考生答题情况</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+        <div style="padding:10px">考生答题详情如下：</div>
+	    <table border="1" class="table table-hover text-center">
+	    <tr>
+	         {foreach $key_array as $k => $v}
+	         	<th style="text-align:center;">$v</th>
+	         {/foreach}
+	     </tr>
+	     <tr>
+	     	 {foreach $val_array as $k => $v}
+	         	<td>$v</td>		
+	         {/foreach}	
+	     </tr> 
+	    </table>
+		<div style="padding:10px">试卷试题详情如下：</div>
+		<ul>
+			{foreach $test as $k => $v}
+				{if $v.type eq 0}
+				<!-- 选择题  -->
+				<li>
+					<div class="test_content_nr_tt">
+						<i>{$k+1}、</i><font>{$v.content}（ 正确答案:{$v.answer} ）</p></font>
+					</div>
+					<div class="test_content_nr_main">
+						<ul>
+							<li class="option">										
+								<input type="radio" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_1"/>
+			                    <label for="{$v.qid}_option_1">A.<p class="ue" style="display: inline;">{$v.aA}</p></label>
+							</li>									
+							<li class="option">
+								<input type="radio" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_2"/>
+								<label for="{$v.qid}_option_2">B.<p class="ue" style="display: inline;">{$v.aB}</p></label>
+							</li>
+							<li class="option">
+								<input type="radio" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_3"/>
+								<label for="{$v.qid}_option_3">C.<p class="ue" style="display: inline;">{$v.aC}</p></label>
+							</li>
+							<li class="option">
+								<input type="radio" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_4"/>
+								<label for="{$v.qid}_option_4">D.<p class="ue" style="display: inline;">{$v.aD}</p></label>
+							</li>
+						</ul>
+					</div>
+		    	</li>
+		    	{elseif $v.type eq 2}
+		    	<li>
+				<div class="test_content_nr_tt">
+					<i>{$k+1}、</i><font>{$v.content}（正确答案: {$v.answer}）</p></font>
+				</div>
+                <div class="test_content_nr_main">
+				<ul>
+					<li class="option"><input type="checkbox" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_1"/>
+						<label for="{$v.qid}_option_1">A.<p class="ue" style="display: inline;">{$v.aA}</p></label>
+					</li>
+					<li class="option"><input type="checkbox" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_2"/>
+						<label for="{$v.qid}_option_2">B.<p class="ue" style="display: inline;">{$v.aB}</p></label>
+					</li>
+					<li class="option"><input type="checkbox" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_3"/>
+						<label for="{$v.qid}_option_3">C.<p class="ue" style="display: inline;">{$v.aC}</p></label>
+					</li>
+					<li class="option"><input type="checkbox" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_4"/>
+						<label for="{$v.qid}_option_4">D.<p class="ue" style="display: inline;">{$v.aD}</p></label>
+					</li>
+				</ul>
+				</div>
+			    </li>
+			    {elseif $v.type eq 1}
+			    <li>
+				<div class="test_content_nr_tt">
+					<i>{$k+1}、</i><font>{$v.content}（正确答案:{if $v.answer eq 1}对{else}错{/if}）</p></font>
+				</div>
+                <div class="test_content_nr_main">
+				<ul>
+					<li class="option">
+						 <input type="radio" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_1"/>
+					     <label for="{$v.qid}_option_1"><p class="ue" style="display: inline;">对</p></label>
+					</li>
+					<li class="option">
+						  <input type="radio" class="radioOrCheck" name="{$v.qid}" id="{$v.qid}_option_2"/>
+						  <label for="{$v.qid}_option_2"><p class="ue" style="display: inline;">错</p></label>
+					</li>
+				</ul>
+				</div>
+			 	</li>
+				{/if}
+			{/foreach}	
+	    </ul>
+</body>
+</html>

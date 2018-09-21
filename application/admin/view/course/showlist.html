@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer.js"></script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;课程列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <div class="padding border-bottom">
+      <ul class="search" style="padding-left:10px;">
+        <li> <a class="button border-main icon-plus-square-o" href="{:url('Course/publish')}">&nbsp;&nbsp;添加课程</a> </li>
+      </ul>
+    </div>
+    <table class="table table-hover text-center">
+      <tr>
+        <th width="10%" style="text-align:center;">课程编号</th>
+        <th width="20%" style="text-align:center;">标题</th>
+        <th width="17%" style="text-align:center;">课程缩略图</th>
+        <th width="15%" style="text-align:center;">创建时间</th>
+        <th width="8%" style="text-align:center;">状态</th>
+        <th width="30%" style="text-align:center;">操作</th>
+      </tr>
+		{volist name='data' id='user'}
+        <tr>
+          <td>{$user.course_id}</td>
+          <td>{$user.title}</td>
+          <td width="10%"><img src="{$user.head_img}" alt="" width="70" height="50" /></td>
+          <td>{$user.create_time}</td>
+          {if $user.status eq 0}<td><font color="red">待发布</font></td>{else}<td>已发布{/if}
+          <td align="center">
+          	   <div class="button-group"> 
+          			 <a class="button border-main" href="{:url('Course/modify')}?course_id={$user.course_id}"><span class="icon-edit"></span>编辑</a> 
+                     <a class="button border-red" href="{:url('Course/delete')}?course_id={$user.course_id}&file_id={$user.file_id}" onclick="if (confirm('删除该课程，相关音频文件也会删除，确定删除吗？')) return true; else return false;"><span class="icon-trash-o"></span>删除</a>              
+              		 {if $user.status eq 0}<a class="button border-yellow" href="{:url('Course/check')}?course_id={$user.course_id}" onclick="if (confirm('确定要发布该课程吗？')) return true; else return false;"><span class="icon-check"></span>发布</a>{/if}              
+               </div>
+          </td>						
+        </tr> 
+        {/volist}
+      <tr>
+        <td colspan="5">{$data->render()}</td>
+      </tr>      
+
+    </table>
+  </div>
+</form>
+</body>
+</html>

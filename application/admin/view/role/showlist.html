@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer1.js"></script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;管理员角色列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <table class="table table-hover text-center">
+     <tr>
+        <th width="30%" style="text-align:center;">序号</th>
+        <th width="30%" style="text-align:center;">角色名称</th>
+        <th width="40%" style="text-align:center;">操作</th>
+      </tr>
+        <?php $i=1;?>
+     	{volist name='data' id='user'}
+        <tr>
+           <td>{$i}</td>
+           <td>{$user.role_name}</td>
+           <td align="center">
+           	   {if $user.role_id neq 1}
+          	   <div class="button-group"> 
+          	         <a class="button border-main" href="{:url('Role/auth')}?role_id={$user.role_id}"><span class="icon-cog"></span>编辑角色权限</a> 
+          			 <a class="button border-yellow" href="{:url('Role/modify')}?role_id={$user.role_id}&role_name={$user.role_name}"><span class="icon-edit"></span>修改角色名</a> 
+          			 <a class="button border-red" href="{:url('Role/delete')}?role_id={$user.role_id}" onclick="if (confirm('确定删除该角色吗？')) return true; else return false;"><span class="icon-trash-o"></span>删除</a>
+               </div>
+               {/if}
+           </td>								
+        </tr>
+         {/volist} 
+         <?php $i=$i+1;?>     
+    </table>
+  </div>
+</form>
+<div class="panel admin-panel margin-top">
+  <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>&nbsp;&nbsp;新增管理员</strong></div>
+  <div class="body-content">
+    <form id="form" method="post" class="form-x" action="{:url('Role/add')}">   
+      <div class="form-group">
+        <div class="label">
+          <label>角色名：</label>
+        </div>
+        <div class="field">
+          <input data-validate="required:请输入科目名称" id="role_name" type="text" class="input w50" name="role_name" value=""/>         
+        </div>
+      </div> 
+     <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button class="button bg-main icon-check-square-o" type="input">提交</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div style="marign-bottom:400px;"></div>
+</body>
+</html>

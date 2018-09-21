@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer.js"></script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;新闻列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <div class="padding border-bottom">
+      <ul class="search" style="padding-left:10px;">
+        <li> <a class="button border-main icon-plus-square-o" href="{:url('News/publish')}">&nbsp;&nbsp;添加新闻</a> </li>
+      </ul>
+    </div>
+    <table class="table table-hover text-center">
+      <tr>
+        <th width="7%" style="text-align:center;">文章ID</th>
+        <th width="17%" style="text-align:center;">标题</th>
+        <th width="9%" style="text-align:center;"">标题图片</th>
+        <th width="5%" style="text-align:center;">栏目</th>
+        <th width="8%" style="text-align:center;">编辑人</th>
+        <th width="13%" style="text-align:center;">创建时间</th>
+        <th width="7%" style="text-align:center;">状态</th>
+        <th width="10%" style="text-align:center;">是否推送</th>
+        <th width="24%" style="text-align:center;">操作(已发布的推送文章不可删除)</th>
+       
+      </tr>
+		{volist name='data' id='user'}
+        <tr>
+          <td>{$user.article_id}</td>
+          <td>{$user.title}</td>
+          <td width="10%"><img src="{$user.head_img}" alt="" width="70" height="50" /></td>
+          <td>{$user.col_name}</td>
+          <td>{$user.author}</td>
+          <td>{$user.create_time}</td>
+          {if $user.status eq 0}<td><font color="red">待发布</font></td>{else}<td>已发布{/if}
+          <td>{if $user.is_push eq 0}否{else}是{/if}</td>
+          <td align="center"><div class="button-group"> <a class="button border-main" href="{:url('News/modify')}?article_id={$user.article_id}"><span class="icon-edit"></span> 修改</a> 
+                                     {if $user.status eq 1 AND $user.is_push eq 1}{else}<a class="button border-red" href="{:url('News/delete')}?article_id={$user.article_id}" onclick="if (confirm('确定要删除该文章吗')) return true; else return false;"><span class="icon-trash-o"></span> 删除</a>{/if}
+                                         {if $user.status eq 0}<a class="button border-yellow" onclick="if (confirm('确定同意该篇文章发表？')) return true; else return false;" href="{:url('News/check')}?is_push={$user.is_push}&article_id={$user.article_id}"><span class="icon-check"></span>发布</a>{/if}
+              </div>
+          </td>
+        								
+        </tr> 
+        {/volist}
+      <tr>
+        <td colspan="9">{$data->render()}</td>
+      </tr>      
+
+    </table>
+  </div>
+</form>
+</body>
+</html>

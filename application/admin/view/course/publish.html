@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer.js"></script>
+<script src="{$Think.const.JS_URL}laydate.js"></script>
+<script src="{$Think.const.JS_URL}layui.js"></script>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+<div class="panel admin-panel">
+  <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>&nbsp;&nbsp;课程添加</strong></div>
+  <div class="body-content">
+    <form id="form" method="post" class="form-x" action="{:url('Course/publish')}">  
+      
+      <div class="form-group">
+        <div class="label">
+          <label>课程标题：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="title" name="title" data-validate="required:请输入标题" />
+          <div class="tips"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="label">
+          <label>课程简要描述：</label>
+        </div>
+        <div class="field">
+          <textarea id="description" class="input" name="description" style=" height:90px;"></textarea>
+          <div class="tips"></div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label">
+          <label>课程内容：</label>
+        </div>
+        <div class="field">
+          <textarea name="content" id="container" class="input1" style="height:800px;"></textarea>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label">
+          <label>课程缩略图：</label>
+        </div>
+        <div class="field"> 
+        	<input type="button" style="display:none" class="button bg-blue margin-left" id="thumb" value="+ 浏览上传"  style="float:left;">
+        </div>
+        <div class="field" style="margin-top:5px"> 
+        	 <img onerror="this.src='{$Think.const.IMG_URL}default.png'" style="border:1px solid #b5cfd9" id="demo1" width="150" height="150" src=""/>
+        	 <input id="head_img" type="hidden" name="head_img" value="">
+        	 <input style="display:none" type="text" value="" name="file_id" id="file_id"/>
+        </div>
+      </div>  
+      
+      <div class="form-group">
+        <div class="label">
+          <label>课程音频地址：</label>
+        </div>
+        <div class="field">
+         	 <input type="text" class="input w50" value="" id="video_url" name="video_url" />
+                <div style="padding-top:8px;"> 
+          		&nbsp;&nbsp;插入音频地址&nbsp;<input id="video"  type="radio" name="video" value="0" checked="checked"/>  
+			                                       上传视频&nbsp;<input id="video"  type="radio" name="video" value="1"/> 
+			                                       上传音频&nbsp;<input id="video"  type="radio" name="video" value="2"/> 
+        </div>
+        </div>
+      </div>  
+       
+       <div id="up_video" class="form-group" style="display:none">
+        <div class="label">
+          <label>上传视频：</label>
+        </div>
+        <div class="field"> 
+        	<input type="button" style="display:none" class="button bg-blue margin-left" id="vidio_upload" value="+ 浏览上传"  style="float:left;">
+        </div>
+      </div>  
+      
+      <div id="up_audio" class="form-group" style="display:none">
+        <div class="label">
+          <label>上传音频：</label>
+        </div>
+        <div class="field"> 
+        	<input type="button" style="display:none" class="button bg-blue margin-left" id="audio_upload" value="+ 浏览上传"  style="float:left;">
+        </div>
+      </div> 
+      
+      
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button class="button bg-main icon-check-square-o" type="button" onclick="checkUser();"> 提交</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+	<!-- 配置文件 -->
+    <script type="text/javascript" src="{$Think.const.UEDITOR_URL}ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="{$Think.const.UEDITOR_URL}ueditor.all.js"></script>
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript">
+        var editor = UE.getEditor('container');
+        function checkUser()
+       	{
+        	if($("#title").val()=="")
+       	   	{
+       			alert("请输入课程标题");
+       			return;
+       	  	}
+       		
+       		if($("#description").val()=="")
+       	   	{
+       			alert("请输入课程简要描述");
+       			return;
+       	  	}
+       		if(UE.getEditor('container').getContent()=="")
+       	   	{
+       			alert("请输入课程主体内容！");
+       			return;
+       	  	}
+       		if($("#head_img").val()=="")
+       	   	{
+       			alert("请上传课程缩略图");
+       			return;
+       	  	}
+       		if($("#video_url").val()=="")
+       	   	{
+       			alert("请上传课程视频");
+       			return;
+       	  	}
+       		document.getElementById("form").submit();
+       	}
+    </script>
+    <!-- 上传 -->
+    <script type="text/javascript">
+    // 图片上传接口
+    layui.use('upload', function(){
+    	  var upload = layui.upload;
+    	  //执行实例
+    	  var uploadInst = upload.render({
+    	    elem: '#thumb' //绑定元素
+    	    ,url: "{:url('Common/img_upload')}" //上传接口
+    	   	,size:10*1024
+    	    ,data:{type:'image'}
+    	    ,done: function(res){
+    	      //上传完毕回调
+    	      if(res.code == 2) {
+    	        $('#demo1').attr('src',res.src);
+    	        $("#head_img").val(res.src);
+    	      } else {
+    	        layer.msg("上传成功！");
+    	      }
+    	    }
+    	    ,error: function(){
+    	      //请求异常回调
+    	      //演示失败状态，并实现重传
+    	    	layer.msg("上传出现错误，请重试！"); 
+    	    }
+    	  });
+    	});
+    
+    
+    // 音频上传接口
+    layui.use('upload', function(){
+  	  var upload = layui.upload;
+  	  //执行实例
+  	  var uploadInst = upload.render({
+  	    elem: '#audio_upload' //绑定元素
+  	    ,url: "{:url('Common/video_upload')}" //上传接口
+  	    ,accept:'audio'
+  	   	,size:1024*1024
+  	    ,data:{type:'audio'}
+  	    ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+	      layer.msg("音频文件开始上传中，请稍后！");
+	      layer.load(); //上传loading
+	  	}
+  	    ,done: function(res){
+  	      layer.closeAll('loading'); //关闭loading
+  	      //上传完毕回调
+  	      if(res.code == 2) {
+  	    	document.getElementById("video_url").value = res.src;  
+  	    	document.getElementById("file_id").value = res.file_id; 
+  	    	layer.msg("上传成功！");
+  	      } else {
+  	        layer.msg(res.msg);
+  	      }
+  	    }
+  	    ,error: function(){
+  	      //请求异常回调
+  	      //演示失败状态，并实现重传
+  	      layer.msg("上传出现错误，请重试！"); 
+  	    }
+  	  });
+  	});
+    
+    // 视频上传接口
+    layui.use('upload', function(){
+  	  var upload = layui.upload;
+  	  //执行实例
+  	  var uploadInst1 = upload.render({
+  	    elem: '#vidio_upload' //绑定元素
+  	   	,accept:'video'
+  	    ,url: "{:url('Common/video_upload')}" //上传接口
+  	    ,size: 1024*1024
+  	    ,data:{type:'video'}
+  	    ,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+  	      layer.msg("视频文件开始上传中，请稍后！");
+  	      layer.load(); //上传loading
+  	  	}
+  	    ,done: function(res){
+  	      //上传完毕回调
+  	      layer.closeAll('loading'); //关闭loading
+  	      if(res.code == 2) {
+  	    	document.getElementById("video_url").value = res.src; 
+  	    	document.getElementById("file_id").value = res.file_id; 
+  	    	layer.msg("上传成功！");
+  	      } else { 
+  	        layer.msg("上传失败！");
+  	      }
+  	    }
+  	    ,error: function(){
+  	      //请求异常回调
+  	      //演示失败状态，并实现重传
+  	    	layer.msg("上传出现错误，请重试！"); 
+  	    }
+  	  });
+  	});
+    </script>
+    <script type="text/javascript">
+    $(function(){
+ 		$(":radio").click(function(){
+ 			var val=$('input:radio[name="video"]:checked').val();
+  			if(val == "0")
+  			{
+  				document.getElementById("up_video").style.display= "none";
+  				document.getElementById("up_audio").style.display= "none";
+  				$("#video_url").attr("readOnly",false); 
+  			}else if(val == "1")
+  			{
+  				document.getElementById("up_video").style.display= "block";
+  				document.getElementById("up_audio").style.display= "none";
+  				$("#video_url").attr("readOnly",true); 
+  			}else
+  			{
+  				document.getElementById("up_video").style.display= "none";
+  				document.getElementById("up_audio").style.display= "block";
+  				$("#video_url").attr("readOnly",true); 
+  			}
+  				
+ 		});
+	 });
+    </script>
+</body></html>

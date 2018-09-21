@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer1.js"></script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;试卷列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <table class="table table-hover text-center">
+     <tr>
+        <th width="10%" style="text-align:center;">试卷编号</th>
+        <th width="30%" style="text-align:center;">试卷标题</th>
+        <th width="15%" style="text-align:center;">所属科目</th>
+        <th width="15%" style="text-align:center;">试卷级别</th>
+        <th width="30%" style="text-align:center;">操作</th>
+      </tr>
+     	{volist name='data' id='user'}
+        <tr>
+          <td>{$user.tid}</td>
+          <td>{$user.title}</td>
+          <td>{$user.cat_name}</td>
+          <td>{if $user.level == 0}
+     				简单
+			  {elseif $user.level == 1}
+    			          一般
+    		  {elseif $user.level == 2} 
+    		  		困难         
+              {/if}
+           </td>
+          
+           <td align="center">
+          	   <div class="button-group"> 
+          			 <a class="button border-main" href="{:url('Check/allUserTest')}?tid={$user.tid}"><span class="icon-edit"></span>查看该试卷所有考生答题情况</a>
+               </div>
+          </td>								
+        </tr>
+         {/volist} 
+      <tr>
+        <td colspan="5">{$data->render()}</td>
+      </tr>      
+    </table>
+  </div>
+</form>
+</body>
+</html>

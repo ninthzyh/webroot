@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<style>
+.panel-headthis {
+    background-color: #fcfcfc;
+    padding: 10px 15px 0px 15px;
+    border-radius: 4px 4px 0 0;
+    border-bottom: solid 1px #ddd;
+}
+</style>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}base.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer1.js"></script>
+</head>
+<body>
+<div class="panel admin-panel">
+  <div class="panel-headthis" id="add"><strong><span class="icon-pencil-square-o"></span>&nbsp;&nbsp;正在为角色<span style="color:red;">&nbsp;{$role_name}&nbsp;</span>分配权限</strong></div>
+
+    <form id="form" method="post" class="form-x" action="{:url('Role/auth')}">   
+        <div class="form-group">
+	        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab">
+            	{foreach $pauth as $k => $v}
+            	 <tr>
+                 	<td style="font-size: 14px;"><label><input name="authname[]" type="checkbox"  value="{$v.auth_id}" {if in_array($v.auth_id,$auth_ids_arr) }checked='checked'{/if} /> <b></b>{$v.auth_name}</label></td>
+                 </tr>
+                 	{foreach $sauth as $kk => $vv}
+                    {if $vv.auth_pid == $v.auth_id}
+                    <tr>
+                    	<td style="padding-left: 30px; font-size: 14px;"><label><input name="authname[]" level="2" type="checkbox"  value="{$vv.auth_id}" {if in_array($vv.auth_id,$auth_ids_arr) }checked='checked'{/if}/> <b></b> {$vv.auth_name}</label></td>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 50px;">
+                            {foreach $tauth as $kkk => $vvv}
+                            {if $vvv.auth_pid == $vv.auth_id}              
+                         	<label><input name="authname[]" level="3" type="checkbox"  value="{$vvv.auth_id}" {if in_array($vvv.auth_id,$auth_ids_arr) }checked='checked'{/if}/>{$vvv.auth_name}</label> &nbsp;&nbsp;&nbsp;
+                            {/if}
+                            {/foreach}       
+                        </td>
+                     </tr>
+                    {/if}
+                    {/foreach}
+            	{/foreach}
+            </table>
+      	</div> 
+        
+         	
+    	<div class="form-group">
+	        <div class="label">
+	          <label></label>
+	        </div>
+	        <div class="field">
+	          <input type="hidden" value="{$role_id}" name="role_id">
+	          <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>   
+	        </div>
+      	</div> 	  
+    </form>
+</div>
+<div style="marign-bottom:500px;"></div>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer.js"></script>
+<script src="{$Think.const.JS_URL}laydate.js"></script>
+<script src="{$Think.const.JS_URL}layui.js"></script>
+<script src="{$Think.const.JS_URL}jquery.min.js"></script>
+</head>
+<body>
+<div class="panel admin-panel">
+  <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>&nbsp;&nbsp;添加新闻</strong></div>
+  <div class="body-content">
+    <form id="form" method="post" class="form-x" action="{:url('News/publish')}">  
+      
+      <div class="form-group">
+        <div class="label">
+          <label>文章标题：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="title" name="title" data-validate="required:请输入标题" />
+          <div class="tips"></div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+          <div class="label">
+            <label>文章所属栏目：</label>
+          </div>
+          <div class="field">
+            <select id="col_id" name="col_id" class="input w50">
+              <option>请选择分类</option>
+              {foreach $column as $k => $v}
+              <option value="{$v.col_id}">{$v.col_name}</option>
+              {/foreach}
+            </select>
+            <div class="tips"></div>
+          </div>
+      </div>
+        
+      <div class="form-group">
+        <div class="label">
+          <label>文章简要描述：</label>
+        </div>
+        <div class="field">
+          <textarea id="description" class="input" name="description" style=" height:90px;"></textarea>
+          <div class="tips"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>文章内容：</label>
+        </div>
+        <div class="field">
+          <textarea name="content" id="container" class="input1" style="height:800px;"></textarea>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label">
+          <label>标题图片：</label>
+        </div>
+        <div class="field"> 
+        	<input type="button" style="display:none" class="button bg-blue margin-left" id="thumb" value="+ 浏览上传"  style="float:left;">
+        </div>
+        <div class="field" style="margin-top:5px"> 
+        	 <img onerror="this.src='{$Think.const.IMG_URL}default.png'" style="border:1px solid #b5cfd9" id="demo1" width="150" height="150" src=""/>
+        	 <input id="head_img" type="hidden" name="head_img" value="">
+        </div>
+      </div>    
+       
+       <div class="form-group">
+        <div class="label">
+          <label>是否推送：</label>
+        </div>
+        <div class="field" style="padding-top:8px;"> 
+             	是&nbsp;<input id="is_push" type="radio" name="is_push" value="1"/>  
+				否&nbsp;<input id="is_push" checked="checked" type="radio" name="is_push" value="0"/>  
+         </div>
+      </div>
+      
+      <div id="p_time" class="form-group" style="display:none;">
+        <div class="label">
+          <label>设置推送时间：</label>
+        </div>
+        <div class="field"> 
+          <input type="text" id="date" class="laydate-icon input w50" name="date"  value=""   style="padding:10px!important; height:auto!important;border:1px solid #ddd!important;" />
+          <input type="text" id="time" class="laydate-icon input w50" name="time" value=""   style="padding:10px!important; height:auto!important;border:1px solid #ddd!important;" />
+          <input type="hidden" type="text" id="push_time"  name="push_time" value=""/>
+          <div class="tips"></div>
+        </div>
+      </div>
+      
+      <div id="p_range" class="form-group" style="display:none;">
+        <div class="label">
+          <label>设置推送范围：</label>
+        </div>
+        <div class="field" style="padding-top:8px;"> 
+          		全部&nbsp;<input id="push_rang" checked="checked" type="radio" name="push_range" value="1"/>  
+				登录用户&nbsp;<input id="push_rang"  type="radio" name="push_range" value="0"/> 
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button class="button bg-main icon-check-square-o" type="button" onclick="checkUser();"> 提交</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+	<!-- 配置文件 -->
+    <script type="text/javascript" src="{$Think.const.UEDITOR_URL}ueditor.config.js"></script>
+    <!-- 编辑器源码文件 -->
+    <script type="text/javascript" src="{$Think.const.UEDITOR_URL}ueditor.all.js"></script>
+    <!-- 实例化编辑器 -->
+    <script type="text/javascript">
+        var editor = UE.getEditor('container');
+        function checkUser()
+       	{
+        	if($("#title").val()=="")
+       	   	{
+       			alert("请输入文章标题");
+       			return;
+       	  	}
+       		if($("#col_id").val()=="请选择分类")
+       	   	{
+       			alert("请选择文章所属分类，若没有请添加！");
+       			return;
+       	  	}
+       		if($("#description").val()=="")
+       	   	{
+       			alert("请输入文章简要描述");
+       			return;
+       	  	}
+       		if(UE.getEditor('container').getContent()=="")
+       	   	{
+       			alert("请输入文章主体内容！");
+       			return;
+       	  	}
+       		if($("#head_img").val()=="")
+       	   	{
+       			alert("请上传标题图片");
+       			return;
+       	  	}
+       		if($('input:radio[name="is_push"]:checked').val()==1)
+       		{
+       			if($("#date").val()=="")
+       			{
+       				alert("请选择推送日期");
+           			return;
+       			}
+       			if($("#time").val()=="")
+       			{
+       				alert("请选择推送时间");
+           			return;
+       			}
+       			var str_time = $("#date").val()+ " "+ $("#time").val();
+       			str_time = str_time.replace(/-/g,"/"); 
+       			var push_time = new Date(str_time).getTime();
+       			var now_time = new Date().getTime()+10*1000*60;
+      
+       			// 判断推送时间是否合理
+       			if(parseInt(push_time) < parseInt(now_time))
+       			{
+       				alert('推送提前时间小于15分钟，请重新设置');
+       				return;
+       			}
+       			$("#push_time").val(str_time);
+       		}
+       		document.getElementById("form").submit();
+       	}
+    </script>
+    
+    <!-- 上传 -->
+    <script>
+    layui.use('upload', function(){
+    	  var upload = layui.upload;
+    	  //执行实例
+    	  var uploadInst = upload.render({
+    		  elem: '#thumb' //绑定元素
+    	      ,size:10*1024
+    	      ,url: "{:url('Common/img_upload')}" //上传接口
+        	  ,data:{type:'image'}
+    	    ,done: function(res){
+    	      //上传完毕回调
+    	      if(res.code == 2) {
+    	        $('#demo1').attr('src',res.src);
+    	        $("#head_img").val(res.src);
+    	      } else {
+    	        layer.msg(res.msg);
+    	      }
+    	    }
+    	    ,error: function(){
+    	      //请求异常回调
+    	      //演示失败状态，并实现重传
+    	    	layer.msg("上传出现错误，请重试！"); 
+    	    }
+    	  });
+    	});
+    </script>
+    
+    
+    
+    <!--设置推送-->
+    <script>
+    $(function(){
+ 		$(":radio").click(function(){
+ 			
+ 			var val=$('input:radio[name="is_push"]:checked').val();
+  			if(val == "1")
+  			{
+  				document.getElementById("p_time").style.display= "block";
+  				document.getElementById("p_range").style.display= "block";
+  			}else{
+  				document.getElementById("p_time").style.display= "none";
+  				document.getElementById("p_range").style.display= "none";
+  			}
+  				
+ 		});
+	 });
+    laydate.render({
+  		elem: '#date',//指定元素
+	});
+    laydate.render({
+    	  elem: '#time'
+    	  ,type: 'time'
+    	}); 
+    </script>
+
+</body></html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer1.js"></script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;试卷列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <div class="padding border-bottom">
+      <ul class="search" style="padding-left:10px;">
+      <li><a class="button border-main icon-plus-square-o" href="{:url('Test/create')}">&nbsp;&nbsp;创建试卷</a> </li>
+      </ul>
+    </div>
+    <table class="table table-hover text-center">
+     <tr>
+        <th width="7%" style="text-align:center;">试卷编号</th>
+        <th width="25%" style="text-align:center;">试卷标题</th>
+        <th width="7%" style="text-align:center;">所属科目</th>
+        <th width="7%" style="text-align:center;">试卷级别</th>
+        <th width="8%" style="text-align:center;">考试时长</th>
+        <th width="5%" style="text-align:center;">总分值</th>
+        <th width="14%" style="text-align:center;">添加时间</th>
+        <th width="25%" style="text-align:center;">操作</th>
+      </tr>
+     	{volist name='data' id='user'}
+        <tr>
+          <td>{$user.tid}</td>
+          <td>{$user.title}</td>
+          <td>{$user.cat_name}</td>
+          <td>{if $user.level == 0}
+     				简单
+			  {elseif $user.level == 1}
+    			          一般
+    		  {elseif $user.level == 2} 
+    		  		困难         
+              {/if}</td>
+          <td align="center">
+          	  {$user.test_time}min
+          </td>
+          <td align="center">
+          	  {$user.score}
+          </td>
+          <td align="center">
+          	  {$user.addtime}
+          </td>	
+           <td align="center">
+          	   <div class="button-group"> 
+          			 <a class="button border-main" href="{:url('Test/addQuest')}?tid={$user.tid}"><span class="icon-edit"></span>编辑试题</a> 
+                     <a class="button border-red" href="{:url('Test/delete')}?tid={$user.tid}" onclick="if (confirm('删除该套试卷会删除和该套试卷所有的相关信息，确定删除吗？')) return true; else return false;"><span class="icon-trash-o"></span>删除</a>              
+                     {if $user.status eq 0}<a class="button border-red" href="{:url('Test/publish')}?tid={$user.tid}" onclick="if (confirm('确定要发布这套试卷吗？')) return true; else return false;"><span class="icon-check"></span>发布</a>{/if}
+               </div>
+          </td>								
+        </tr>
+         {/volist} 
+      <tr>
+        <td colspan="7">{$data->render()}</td>
+      </tr>      
+    </table>
+  </div>
+</form>
+<!-- 新增试卷 -->
+<div class="panel admin-panel margin-top">
+  <div class="panel-head" id="add"><strong><span class="icon-pencil-square-o"></span>新增试卷</strong></div>
+  <div class="body-content">
+    <form id="form" method="post" class="form-x" action="{:url('Test/create')}">   
+    
+      <div class="form-group">
+        <div class="label">
+          <label>试卷标题：</label>
+        </div>
+        <div class="field">
+          <input id="title" type="text" class="input w50" name="title" value="" data-validate="required:请输入科目名称" />         
+          <div class="tips"></div>
+        </div>
+      </div> 
+      
+      <div class="form-group">
+          <div class="label">
+            <label>选择试卷级别：</label>
+          </div>
+          <div class="field">
+            <select id="level" name="level" class="input w50">
+              <option value="0">简单</option>
+              <option value="1">一般</option>
+              <option value="2">困难</option>
+            </select>
+          </div>
+      </div>
+      
+      <div class="form-group">
+          <div class="label">
+            <label>试题所属科目：</label>
+          </div>
+          <div class="field">
+            <select id="cid" name="cid" class="input w50">
+              <option>请选择分类</option>
+              {foreach $cat as $k => $v}
+              <option value="{$v.cid}">{$v.cat_name}</option>
+              {/foreach}
+            </select>
+          </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label">
+          <label>考试时长(分钟)：</label>
+        </div>
+        <div class="field">
+          <input id="test_time" type="number" class="input w50" name="test_time" value="" />       
+        </div>
+      </div> 
+      
+     <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button onclick="checkUser()" class="button bg-main icon-check-square-o" type="button">提交</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script src="{$Think.const.JS_URL}layui.js"></script>
+<script>
+//提交验证
+function checkUser()
+{
+		if($("#title").val()=="")
+	   	{
+			alert("请输入试卷标题！");
+			return;
+	  	}
+		if($("#cid").val()=="请选择分类")
+	   	{
+			alert("请选择试卷所属科目，若没有请添加！");
+			return;
+	  	}
+	    if($("#test_time").val()=="")
+	   	{
+	    	alert("请填写考试时长！");
+			return;
+	   	}
+	    var test_time = parseInt($("#test_time").val());
+	    if(test_time < 0 || test_time > 180 )
+	    {
+	    	alert("考试时长设置不合理，请重新设置!");
+			return;
+	    }
+		document.getElementById("form").submit();
+}
+</script>
+</body>
+</html>

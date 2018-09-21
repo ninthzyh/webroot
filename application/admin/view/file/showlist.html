@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer.js"></script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;文件列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <table class="table table-hover text-center">
+      <tr>
+        <th width="10%" style="text-align:center;">文件编号</th>
+        <th width="5%" style="text-align:center;">类型</th>
+        <th width="30%" style="text-align:center;">存储路径</th>
+        <th width="10%" style="text-align:center;">文件大小</th>
+        <th width="15%" style="text-align:center;">上传时间</th>
+        <th width="30%" style="text-align:center;">操作</th>
+      </tr>
+		{volist name='data' id='user'}
+        <tr>
+          <td>{$user.id}</td>
+          <td>{if $user.file_purpose eq 'audio'}音频{else}视频{/if}</td>
+          <td>{$user.file_url}</td>
+          <td>{$user.file_size}MB</td>
+          <td>{$user.upload_time}</td>
+          <td align="center">
+          	   <div class="button-group"> 
+          	   		 <a class="button border-yellow" href="{:url('Course/modify')}?course_id={$user.course_id}"><span class="icon-edit"></span>&nbsp;&nbsp;修改课程文件</a>              
+                     {if $user.course_id eq ''}<a class="button border-red" href="{:url('File/delete')}?file_id={$user.id}"><span class="icon-trash-o"></span>删除</a>{/if}              
+               </div>
+          </td>						
+        </tr> 
+        {/volist}
+      <tr>
+        <td colspan="6">{$data->render()}</td>
+      </tr>      
+
+    </table>
+  </div>
+</form>
+</body>
+</html>

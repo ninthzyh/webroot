@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer1.js"></script>
+</head>
+<body>
+<!-- 新增试题 -->
+<div class="panel admin-panel margin-top">
+  <div class="panel-head"><strong><span class="icon-pencil-square-o"></span>&nbsp;&nbsp;新增试题</strong></div>
+  <div class="body-content">
+    <form id="form" method="post" class="form-x" action="{:url('Quest/add')}">   
+       <div class="form-group">
+          <div class="label">
+            <label>选择试题类型：</label>
+          </div>
+          <div class="field">
+            <select id="type" name="type" class="input w50" onchange="setQuest()">
+              <option value="0">选择题</option>
+              <option value="1">判断题</option>
+              <!-- <option value="2">填空题</option> -->
+              <option value="3">简答题</option>
+            </select>
+            <div class="tips"></div>
+          </div>
+      </div>
+      
+      <div class="form-group">
+          <div class="label">
+            <label>试题所属科目：</label>
+          </div>
+          <div class="field">
+            <select id="cid" name="cid" class="input w50">
+              <option>请选择分类</option>
+              {foreach $cat as $k => $v}
+              <option value="{$v.cid}">{$v.cat_name}</option>
+              {/foreach}
+            </select>
+            <div class="tips"></div>
+          </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label">
+          <label>问题：</label>
+        </div>
+        <div class="field">
+          <textarea id="content" class="input" name="content" style=" height:70px;"></textarea>
+          <div class="tips"></div>
+        </div>
+      </div> 
+      
+      <div class="form-group">
+        <div class="label">
+          <label>是否含说明图：</label>
+        </div>
+        <div class="field" style="padding-top:8px;"> 
+             	是&nbsp;<input id="up_img"  type="radio" name="up_img" value="1"/>  
+				否&nbsp;<input id="up_img"   checked="checked" type="radio" name="up_img" value="0"/>  
+         </div>
+      </div>
+      
+      <div id="img" class="form-group" style="display:none">
+        <div class="label">
+          <label>说明图片：</label>
+        </div>
+        <div class="field"> 
+        	<input type="button" style="display:none" class="button bg-blue margin-left" id="thumb" value="+ 浏览上传"  style="float:left;">
+        </div>
+        <div class="field" style="margin-top:5px"> 
+        	 <img onerror="this.src='{$Think.const.IMG_URL}default.png'" style="border:1px solid #b5cfd9" id="demo1" width="150" height="150" src=""/>
+        	 <input id="img_url" type="hidden" name="img_url" value="">
+        </div>
+      </div> 
+      
+      <div id="saq_area" class="form-group" style="display:none">
+        <div class="label">
+          <label>简答题答案：</label>
+        </div>
+        <div class="field">
+          <textarea id="saq_answer" class="input" name="saq_answer" style=" height:60px;"></textarea>
+          <div class="tips"></div>
+        </div>
+      </div> 
+      
+      
+      <div id="judge_area" class="form-group" style="display:none">
+        <div class="label">
+          <label>判断题答案：</label>
+        </div>
+        <div class="field" style="padding-top:8px;"> 
+             	对&nbsp;<input id="judge_answer" checked="checked" type="radio" name="judge_answer" value="1"/>  
+				错&nbsp;<input id="judge_answer"  type="radio" name="judge_answer" value="0"/>  
+         </div>
+      </div>
+      <div id="sel_answer_set" class="form-group">
+        <div class="label">
+          <label>答案设置：A：</label>
+        </div>
+        <div class="field">
+          <textarea id="a_answer" class="input" name="a_answer" style=" height:40px;"></textarea>
+		</div>
+       <div class="label">
+          <label>B：</label>
+        </div>
+        <div class="field">
+          <textarea id="b_answer" class="input" name="b_answer" style=" height:40px;"></textarea>
+		</div>
+        <div class="label">
+          <label>C：</label>
+        </div>
+        <div class="field">
+         <textarea id="c_answer" class="input" name="c_answer" style=" height:40px;"></textarea>
+		</div>
+        <div class="label">
+          <label>D：</label>
+        </div>
+        <div class="field">
+          <textarea id="d_answer" class="input" name="d_answer" style=" height:40px;"></textarea>
+		</div>
+      </div>
+      <div id="sel_answer_area" class="form-group">
+        <div class="label">
+          <label>选择题答案：</label>
+        </div>
+        <div class="field" style="padding-top:8px;"> 
+             	A&nbsp;<input checked="checked" id="sel_answer" type="radio" name="sel_answer" value="A"/>  
+				B&nbsp;<input id="sel_answer" type="radio" name="sel_answer" value="B"/>  
+                C&nbsp;<input id="sel_answer" type="radio" name="sel_answer" value="C"/>  
+                D&nbsp;<input id="sel_answer" type="radio" name="sel_answer" value="D"/>  
+         </div>
+      </div>
+     
+      
+     <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button class="button bg-main icon-check-square-o" onclick="checkUser();" type="button">提交</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="{$Think.const.JS_URL}layui.js"></script>
+<script type="text/javascript">
+
+//是否上传图片
+$(function(){
+	    $('input[type=radio][name=up_img]').change(function() {
+	        if (this.value == '1') 
+	        	document.getElementById("img").style.display= "block";
+	        else
+	        	document.getElementById("img").style.display= "none";	
+	    });
+	    
+});
+// 上传
+layui.use('upload', function(){
+	  var upload = layui.upload;
+	  //执行实例
+	  var uploadInst = upload.render({
+		  elem: '#thumb' //绑定元素
+	      ,size:10*1024
+	      ,url: "{:url('Common/img_upload')}" //上传接口
+  	  ,data:{type:'image'}
+	    ,done: function(res){
+	      //上传完毕回调
+	      if(res.code == 2) {
+	        $('#demo1').attr('src',res.src);
+	        $("#img_url").val(res.src);
+	      } else {
+	        layer.msg(res.msg);
+	      }
+	    }
+	    ,error: function(){
+	      //请求异常回调
+	      //演示失败状态，并实现重传
+	    	layer.msg("上传出现错误，请重试！"); 
+	    }
+	  });
+});
+//设置试题类型
+function setQuest()
+{
+	var type = $("#type").val();
+	if(type == "0")
+	{
+		document.getElementById("sel_answer_set").style.display= "block";
+		document.getElementById("sel_answer_area").style.display= "block";
+		document.getElementById("judge_area").style.display= "none";
+		document.getElementById("saq_area").style.display= "none";
+	}else if(type == "1")
+	{
+		document.getElementById("sel_answer_set").style.display= "none";
+		document.getElementById("sel_answer_area").style.display= "none";
+		document.getElementById("judge_area").style.display= "block";
+		document.getElementById("saq_area").style.display= "none";
+	}else
+	{
+		document.getElementById("sel_answer_set").style.display= "none";
+		document.getElementById("sel_answer_area").style.display= "none";
+		document.getElementById("judge_area").style.display="none";
+		document.getElementById("saq_area").style.display= "block";
+	}
+}
+// 提交验证
+function checkUser()
+{
+		if($("#cid").val()=="请选择分类")
+	   	{
+			alert("请选择试题所属科目，若没有请添加！");
+			return;
+	  	}
+	    if($("#content").val()=="")
+	   	{
+			alert("请输入问题内容！");
+			return;
+	  	}
+		if($('input:radio[name="up_img"]:checked').val()==1&&$("#img_url").val()=="")
+	   	{
+			
+			alert("请上传说明图！");
+			return;
+	  	}
+		if($("#type").val()=="0")
+	   	{
+			
+			if($("#a_answer").val()==""||$("#b_answer").val()==""||$("#c_answer").val()==""||$("#d_answer").val()=="")
+			{
+				alert("请设置完整选择题答案内容");
+				return;
+			}	
+	  	}
+		if($("#type").val()=="3")
+	  	{
+	  		if($("#saq_answer").val()=="")
+	  		{
+	  			alert("请填写简单题参考答案！");
+				return;
+	  		}
+	 	}
+		document.getElementById("form").submit();
+}
+</script>
+</body>
+</html>

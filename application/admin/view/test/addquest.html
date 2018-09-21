@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link rel="stylesheet" href="{$Think.const.CSS_URL}pintuer.css">
+<link rel="stylesheet" href="{$Think.const.CSS_URL}admin.css">
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script src="{$Think.const.JS_URL}pintuer.js"></script>
+</head>
+<body>
+<form method="post" action="" id="listform">
+  <div class="panel admin-panel">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;全部试题列表</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <table class="table table-hover text-center">
+     <tr>
+        <th width="10%" style="text-align:left; padding-left:20px;">编号</th>
+        <th width="45%" style="text-align:center;">题目问题</th>
+        <th width="15%" style="text-align:center;">题目类型</th>
+        <th width="15%" style="text-align:center;">所属科目</th>
+      </tr>
+     	{volist name='data' id='user'}
+        <tr>
+          <td style="text-align:left; padding-left:20px;" ><input type="checkbox" name="qid[]" value="{$user.qid}" />{$user.qid}</td>
+          <td id="content_{$user.qid}">{$user.content}</td>
+          <td id="type_{$user.qid}">{if $user.type == "0"}
+     				选择题
+			  {elseif $user.type == "1"}
+    			          判断题
+    		  {elseif $user.type == "2"}
+    		  		多选题
+    		  {elseif $user.type == "3"} 
+    		  		简答题         
+              {/if}
+          </td>
+          <td id="catname_{$user.qid}">{$user.cat_name}</td>				
+        </tr>
+         {/volist} 
+      <tr>
+        <td style="text-align:left; padding:19px 0;padding-left:20px;"><input type="checkbox" id="checkall"/>
+          全选 </td>
+        <td colspan="3" style="text-align:left;padding-left:20px;"><a class="button border-blue icon-edit" style="padding:5px 15px;" onclick="addQuest()">&nbsp;添加到试卷</a>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="4">{$data->render()}</td>
+      </tr>      
+    </table>
+  </div>
+</form>
+<!-- 已添加试题 -->
+<div class="panel admin-panel" style="margin-top:10px;margin-bottom:10px;">
+    <div class="panel-head"><strong class="icon-reorder">&nbsp;&nbsp;试卷:&nbsp;<span style="color:red">《{$test_name}》</span>&nbsp;已添加试题</strong> <a href="" style="float:right; display:none;">添加字段</a></div>
+    <table id="quests" class="table table-hover text-center">
+    <tr>
+        <th width="10%" style="text-align:left; padding-left:20px;">编号</th>
+        <th width="35%" style="text-align:center;">题目问题</th>
+        <th width="15%" style="text-align:center;">题目类型</th>
+        <th width="15%" style="text-align:center;">所属科目</th>
+        <th width="10%" style="text-align:center;">操作</th>
+    </tr>
+     	{foreach $test_quest as $k => $v}
+        <tr>
+          <td style="text-align:left; padding-left:20px;" >{$v.qid}</td>
+          <td>{$v.content}</td>
+          <td>
+              {if $v.type == "0"}
+     				选择题
+			  {elseif $v.type == "1"}
+    			          判断题
+    		  {elseif $v.type == "2"}
+    		  		多选题
+    		  {elseif $v.type == "3"} 
+    		  		简答题         
+              {/if}
+          </td>
+          <td>{$v.cat_name}</td>	
+          <td id="{$v.qid}" onclick="javascript:del(this)">
+          	  <div class="button-group"> 
+          		  <a class="button border-red"><span class="icon-trash-o"></span>删除</a>
+              </div>
+          </td>			
+        </tr>
+        {/foreach}
+    </table>
+  </div>
+<!-- 保存试卷 -->
+<div class="field" style="margin-bottom:50px;">
+<form method="post" action="{:url('Test/saveQuest')}">
+	 <input name="tid" value="{$tid}" type="hidden"/>
+     <button class="button bg-main icon-check-square-o" type="submit">保存试卷</button>
+</form>
+</div> 
+<script src="{$Think.const.JS_URL}jquery.js"></script>
+<script type="text/javascript">
+
+var qids = new Array();
+window.onload=function(){ 
+    // 初始化内容 
+	var tb = document.getElementById('quests');            // table 的 id
+	var rows = tb.rows;                                    // 获取表格所有行
+	for(var i = 1; i<rows.length; i++ ){
+		 qids.push(rows[i].cells[0].innerHTML)  
+	};
+}
+
+// 试卷编号
+var tid = {$tid};
+
+//全选
+$("#checkall").click(function(){ 
+	 $("input[name='qid[]']").each(function(){
+		  if (this.checked) 
+			  this.checked = false;
+		  else 
+			  this.checked = true;
+     });
+})
+
+// 删除试卷中的题目
+function del(obj)
+{
+	$.ajax({
+		type:'GET',
+		url:'{$Think.const.PRE_URL}'+'admin/test/deleteQuest',
+		data:{
+			tid:tid,
+			qid:obj.id
+		},
+		success:function(ret){
+			var data = JSON.parse(ret);
+			if(data.status == 'success')
+			{
+				alert("删除成功！");
+				//移除该行
+				$(obj).parent().remove();
+				
+				//试题编号数组中移除该试题编号
+				for(var i=0; i<qids.length; i++) {
+				    if(qids[i] == obj.id) {
+				    	qids.splice(i, 1);
+				      	break;
+				    }
+				}
+			}else
+				alert("删除失败，请重试！");
+	    }
+   })
+}
+
+// 往试卷中添加试题
+function addQuest()
+{
+	// 准备上传的试题数据
+	var quest_ids = document.getElementsByName('qid[]');
+    var up_qids= new Array();//最后上传的试题编号数组
+    for(var i = 0; i < quest_ids.length; i++)
+    {
+    	if(quest_ids[i].checked)
+    	{
+    		var flag = false;
+    		for(var j = 0; j < qids.length; j++)
+    		{
+    			// 检测添加的试题是否早已添加过
+    			if(quest_ids[i].value == qids[j])
+    			{
+    				flag = true;
+    				break;
+    			}
+    		}
+    		if(!flag){
+    			up_qids.push(quest_ids[i].value); //新添加试题
+    			qids.push(quest_ids[i].value);   //更新已添加试题数组
+    		}
+    	}	
+    }
+    if(up_qids.length != 0)
+   	{
+    	// 上传数据
+        $.ajax({
+    		type:'POST',
+    		url:'{$Think.const.PRE_URL}'+'admin/test/updateQuest',
+    		data:{
+    			tid:tid,
+    			qids:JSON.stringify(up_qids)
+    		},
+    		success:function(ret){
+    			var data = JSON.parse(ret);
+    			if(data.status == 'success')
+    			{
+    				for(var i=0;i<up_qids.length;i++)
+    				{	 
+    					 var qid = up_qids[i];
+    					 var content = $("#content_"+qid).html();
+    					 var type = $("#type_"+qid).html();
+    					 var cat_name = $("#catname_"+qid).html();
+    					 var str= '<tr>'+
+    			          	           '<td style="text-align:left; padding-left:20px;" >'+qid+'</td>'+
+    			                       '<td>'+content+'</td>'+
+    			                       '<td>'+type+'</td>'+
+    			                       '<td>'+cat_name+'</td>'+	
+    			                       '<td id="'+qid+'" onclick="javascript:del(this)">'+
+    			          	               '<div class="button-group">'+ 
+    			          		               '<a class="button border-red"><span class="icon-trash-o"></span>删除</a>'+
+    			                           '</div>'+
+    			                       '</td>'+		
+    			                    '</tr>';
+    			         $("#quests").append(str);              
+    				}
+    				alert("添加成功！");
+    			}else
+    				alert("添加失败，请重试！");	
+    	    }
+       })	
+   	}else
+   		alert("该试题已添加！");
+}
+</script>
+</body>
+</html>
